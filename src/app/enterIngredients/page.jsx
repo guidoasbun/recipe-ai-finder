@@ -5,7 +5,7 @@ import LoadingRecipes from "@/components/loading-recipes/loading-recipes";
 
 export default function EnterIngredients() {
   const [ingredients, setIngredients] = useState(["", "", ""]);
-  const [recipes, setRecipes] = useState("");
+  const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
 
   async function handleGenerate() {
@@ -63,10 +63,33 @@ export default function EnterIngredients() {
       </div>
 
       {loading && <LoadingRecipes />}
-      {recipes && (
-        <pre className="mt-6 bg-gray-100 p-4 rounded whitespace-pre-wrap">
-          {recipes}
-        </pre>
+      {Array.isArray(recipes) && recipes.length > 0 && (
+        <div className="grid gap-6">
+          {recipes.map((recipe, i) => (
+            <div key={i} className="p-4 border rounded bg-white shadow">
+              {recipe.image && (
+                <img
+                  src={recipe.image}
+                  alt={recipe.title}
+                  className="w-full h-64 object-cover rounded mb-4"
+                />
+              )}
+              <h2 className="text-xl font-bold mb-2">{recipe.title}</h2>
+              <h3 className="font-semibold">Ingredients:</h3>
+              <ul className="list-disc ml-5 mb-2">
+                {recipe.ingredients.map((ing, idx) => (
+                  <li key={idx}>{ing}</li>
+                ))}
+              </ul>
+              <h3 className="font-semibold">Steps:</h3>
+              <ol className="list-decimal ml-5">
+                {recipe.steps.map((step, idx) => (
+                  <li key={idx}>{step}</li>
+                ))}
+              </ol>
+            </div>
+          ))}
+        </div>
       )}
     </main>
   );
