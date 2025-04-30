@@ -1,8 +1,13 @@
 import OpenAI from "openai";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY
 });
+
+console.log("Loaded key:", process.env.OPENAI_API_KEY);
 
 export async function generateRecipes(ingredients) {
   const prompt = `Create 3 unique recipes using only these ingredients: ${ingredients.filter((i) => i.trim() !== "").join(", ")}.
