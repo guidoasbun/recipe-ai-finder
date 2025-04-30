@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CognitoProvider from "next-auth/providers/cognito";
+import { saveUserToDynamo } from "@/lib/dynamo";
 
 const handler = NextAuth({
   providers: [
@@ -25,6 +26,14 @@ const handler = NextAuth({
     async jwt({ token, account, profile, user }) {
       // Initial sign in
       if (account && user) {
+        // Save user once on sign-in
+        await saveUserToDynamo({
+          id: profile.sub,
+          email: profile.email,
+          username:
+              profile.username || profile["cognito:username"] || profile.email,
+        });
+
         return {
           ...token,
           accessToken: account.access_token,
