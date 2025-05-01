@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoadingRecipes from "@/components/loading-recipes/loading-recipes";
 import RecipeCard from "@/components/recipe-card/recipe-card";
 
@@ -8,6 +8,23 @@ export default function EnterIngredients() {
   const [ingredients, setIngredients] = useState(["", "", ""]);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // Load recipes from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("savedRecipes");
+      if (stored) {
+        setRecipes(JSON.parse(stored));
+      }
+    }
+  }, []);
+
+// Update localStorage when new recipes are set
+  useEffect(() => {
+    if (recipes.length > 0) {
+      localStorage.setItem("savedRecipes", JSON.stringify(recipes));
+    }
+  }, [recipes]);
 
   async function handleGenerate() {
     setLoading(true);
