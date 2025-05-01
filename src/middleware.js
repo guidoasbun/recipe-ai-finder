@@ -8,5 +8,5 @@ export default withAuth({
 })
 
 export const config = {
-    matcher: ['/enterIngredients'] // Add more protected routes here
+    matcher: ['/enterIngredients', '/viewsavedrecipes'] // Add more protected routes here
 };

@@ -8,7 +8,7 @@ const openai = new OpenAI({
 });
 
 console.log("Loaded key:", process.env.OPENAI_API_KEY);
-
+console.log("My OpenAI Key:", process.env.OPENAI_API_KEY);
 export async function generateRecipes(ingredients) {
   const prompt = `Create 3 unique recipes using only these ingredients: ${ingredients.filter((i) => i.trim() !== "").join(", ")}.
     Assume basic pantry items (salt, pepper, oil, sugar) are available.
