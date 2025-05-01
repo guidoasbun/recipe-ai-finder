@@ -1,23 +1,31 @@
 import { useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 
 export default function RecipeCard({ recipe }) {
   const { data: session } = useSession();
+  const [isSaving, setIsSaving] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const handleSave = async () => {
-    const res = await fetch("/api/save-recipe", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: session?.user?.email,
-        recipe,
-      }),
-    });
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/save-recipe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: session?.user?.email,
+          recipe,
+        }),
+      });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Recipe saved!");
-    } else {
-      alert("Failed to save: " + data.error);
+      const data = await res.json();
+      if (res.ok) {
+        setShowSaveModal(true);
+      } else {
+        alert("Failed to save: " + data.error);
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -46,10 +54,26 @@ export default function RecipeCard({ recipe }) {
       {session && (
         <button
           onClick={handleSave}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          disabled={isSaving}
+          className={`mt-4 px-4 py-2 text-white rounded transition ${
+            isSaving ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+          }`}
         >
-          Save Recipe
+          {isSaving ? "Saving..." : "Save Recipe"}
         </button>
+      )}
+      {showSaveModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.5)] z-50">
+          <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center">
+            <h2 className="text-lg font-semibold mb-4">Recipe Saved!</h2>
+            <button
+              onClick={() => setShowSaveModal(false)}
+              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

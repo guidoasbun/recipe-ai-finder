@@ -23,7 +23,6 @@ export default function ViewSavedRecipesPage() {
   }, []);
 
   if (loading) return <p className="text-center">Loading...</p>;
-  console.log(recipes);
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Your Saved Recipes</h1>
@@ -40,11 +39,17 @@ export default function ViewSavedRecipesPage() {
               <p>{recipe.description}</p>
               <button
                 onClick={async () => {
+                  const confirmDelete = window.confirm(`Are you sure you want to delete "${recipe.title}"?`);
+                  if (!confirmDelete) return;
+
                   try {
                     const res = await fetch('/api/save-recipe/delete', {
                       method: 'DELETE',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ recipeID: recipe.recipeID }),
+                      body: JSON.stringify({
+                        recipeID: recipe.recipeID,
+                        imageKey: recipe.image?.split('/').slice(-1)[0], // adjust if key is nested
+                      }),
                     });
 
                     if (!res.ok) throw new Error('Failed to delete');
@@ -57,10 +62,7 @@ export default function ViewSavedRecipesPage() {
               >
                 Delete
               </button>
-
-
             </li>
-
           ))}
         </ul>
       )}
