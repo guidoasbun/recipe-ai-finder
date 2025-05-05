@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -22,13 +22,13 @@ export default function MainHeader() {
     try {
       await fetch("/api/auth/revoke", {
         method: "POST",
-        credentials: "include",
+        credentials: "include"
       });
 
       // Then sign out with callback
       await signOut({
         callbackUrl: "/",
-        redirect: true,
+        redirect: true
       });
 
       // Clear any local storage if you're using it
@@ -38,8 +38,10 @@ export default function MainHeader() {
       console.error("Logout failed:", error);
     }
   };
+
   return (
-    <header className="bg-gradient-to-r from-green-200 to-green-50 shadow-md p-4 sm:p-6 rounded-b-lg flex flex-col sm:flex-row justify-between items-center border-b border-green-300 gap-4 sm:gap-0">
+    <header
+      className="bg-gradient-to-r from-green-200 to-green-50 shadow-md p-4 sm:p-6 rounded-b-lg flex flex-col sm:flex-row justify-between items-center border-b border-green-300 gap-4 sm:gap-0">
       <Link href="/" className="text-4xl sm:text-5xl font-extrabold text-green-700 text-center sm:text-left">
         RecipeAI
       </Link>
@@ -49,7 +51,7 @@ export default function MainHeader() {
       >
         ☰
       </button>
-      <div className={`flex-col sm:flex sm:flex-row items-center gap-4 ${menuOpen ? 'flex' : 'hidden'} sm:gap-4`}>
+      <div className={`flex-col sm:flex sm:flex-row items-center gap-4 ${menuOpen ? "flex" : "hidden"} sm:gap-4`}>
         {session ? (
           <>
             <span className="text-gray-700 text-xl sm:text-2xl font-extrabold text-center sm:text-left">
@@ -57,7 +59,7 @@ export default function MainHeader() {
             </span>
 
             <Link href="/enterIngredients"
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
               Enter Ingredients
             </Link>
 
@@ -75,11 +77,12 @@ export default function MainHeader() {
             </button>
           </>
         ) : (
-          <Link href="/api/auth/signin?callbackUrl=/enterIngredients">
-            <span className="bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-700 transition duration-300">
-              Log In
-            </span>
-          </Link>
+          <button
+            className="bg-green-600 text-white px-6 py-3 rounded-lg text-lg hover:bg-green-700 transition duration-300"
+            onClick={() => signIn("cognito")}
+          >
+            Log In
+          </button>
         )}
       </div>
     </header>

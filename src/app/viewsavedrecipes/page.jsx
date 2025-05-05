@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import SmallRecipeCard from '@/components/small-recipe-card/small-recipe-card';
 
 export default function ViewSavedRecipesPage() {
   const [recipes, setRecipes] = useState([]);
@@ -31,37 +32,27 @@ export default function ViewSavedRecipesPage() {
       ) : (
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {recipes.map((recipe, index) => (
-            <li key={index} className="border rounded p-4 shadow">
-              <h2 className="text-xl font-semibold">{recipe.title}</h2>
-              {recipe.image && (
-                <img src={recipe.image} alt={recipe.title} className="w-full h-48 object-cover rounded mb-2" />
-              )}
-              <p>{recipe.description}</p>
-              <button
-                onClick={async () => {
-                  const confirmDelete = window.confirm(`Are you sure you want to delete "${recipe.title}"?`);
-                  if (!confirmDelete) return;
+            <li key={index} className="border rounded shadow hover:shadow-lg transition-transform transform hover:scale-[1.02] hover:-translate-y-0.5">
+              <SmallRecipeCard recipe={recipe} onDelete={async () => {
+                const confirmDelete = window.confirm(`Are you sure you want to delete "${recipe.title}"?`);
+                if (!confirmDelete) return;
 
-                  try {
-                    const res = await fetch('/api/save-recipe/delete', {
-                      method: 'DELETE',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        recipeID: recipe.recipeID,
-                        imageKey: recipe.image?.split('/').slice(-1)[0], // adjust if key is nested
-                      }),
-                    });
+                try {
+                  const res = await fetch('/api/save-recipe/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      recipeID: recipe.recipeID,
+                      imageKey: recipe.image?.split('/').slice(-1)[0],
+                    }),
+                  });
 
-                    if (!res.ok) throw new Error('Failed to delete');
-                    setRecipes((prev) => prev.filter((r) => r.recipeID !== recipe.recipeID));
-                  } catch (err) {
-                    console.error('Delete error:', err);
-                  }
-                }}
-                className="mt-2 px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded"
-              >
-                Delete
-              </button>
+                  if (!res.ok) throw new Error('Failed to delete');
+                  setRecipes((prev) => prev.filter((r) => r.recipeID !== recipe.recipeID));
+                } catch (err) {
+                  console.error('Delete error:', err);
+                }
+              }} />
             </li>
           ))}
         </ul>

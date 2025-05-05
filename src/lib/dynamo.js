@@ -53,7 +53,6 @@ export async function saveRecipeToDynamo(userId, recipe) {
     }
 }
 
-
 export async function getSavedRecipesByUser(userID) {
   const params = {
     TableName: process.env.DYNAMO_TABLE_NAME,
@@ -67,4 +66,17 @@ export async function getSavedRecipesByUser(userID) {
   const command = new QueryCommand(params);
   const result = await client.send(command);
   return result.Items.map(item => unmarshall(item));
+}
+
+export async function getRecipeByID(recipeID, userID) {
+  const params = {
+    TableName: process.env.DYNAMO_TABLE_NAME,
+    Key: {
+      recipeID,
+      userID,
+    },
+  };
+  console.log("DynamoDB get params:", params);
+  const result = await dynamoDb.get(params).promise();
+  return result.Item;
 }

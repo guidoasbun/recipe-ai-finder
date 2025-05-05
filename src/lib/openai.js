@@ -9,7 +9,13 @@ const openai = new OpenAI({
 
 export async function generateRecipes(ingredients) {
   const prompt = `Create 3 unique recipes using only these ingredients: ${ingredients.filter((i) => i.trim() !== "").join(", ")}.
-    Assume basic pantry items (salt, pepper, oil, sugar) are available.
+    Assume I have basic cooking ingredients like salt, pepper, flour and oil.
+    Give me a brief description of the recipe. 
+    The recipes should be simple and easy to follow.
+    Ingredients are formatted by measurement and name.
+    Instructions are formatted by instructionNumber and instruction.
+    provide detailed instructions
+    for the step, dont provide step numbers
     Return the result as a JSON array like this:
     [
       {
