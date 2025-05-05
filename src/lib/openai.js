@@ -14,12 +14,14 @@ export async function generateRecipes(ingredients) {
     The recipes should be simple and easy to follow.
     Ingredients are formatted by measurement and name.
     Instructions are formatted by instructionNumber and instruction.
-    provide detailed instructions
-    for the step, dont provide step numbers
+    provide detailed instructions.
+    for the step, dont provide step numbers.
+    include a detailed description.
     Return the result as a JSON array like this:
     [
       {
         "title": "Recipe Name",
+        "description": "detailed description",
         "ingredients": ["ingredient1", "ingredient2"],
         "steps": ["Step 1", "Step 2"]
       },

@@ -38,6 +38,11 @@ export default function RecipeDetailPage() {
         />
       )}
       <section className="mb-4">
+        <h2 className="text-xl font-semibold mb-2">Description</h2>
+        <h1>{recipe.description}</h1>
+
+      </section>
+      <section className="mb-4">
         <h2 className="text-xl font-semibold mb-2">Ingredients</h2>
         <ul className="list-disc list-inside">
           {recipe.ingredients?.map((item, index) => (

@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function RecipeCard({ recipe }) {
   const { data: session } = useSession();
@@ -39,6 +39,8 @@ export default function RecipeCard({ recipe }) {
         />
       )}
       <h2 className="text-2xl font-bold text-gray-800 mb-2">{recipe.title}</h2>
+      <h3 className="text-lg font-semibold text-gray-700 mt-4 mb-1">Description:</h3>
+      <h1>{recipe.description}</h1>
       <h3 className="text-lg font-semibold text-gray-700 mt-4 mb-1">Ingredients:</h3>
       <ul className="list-disc ml-6 text-gray-600 space-y-1 mb-2">
         {recipe.ingredients.map((ing, idx) => (

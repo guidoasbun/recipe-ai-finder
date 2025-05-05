@@ -37,6 +37,7 @@ export async function saveRecipeToDynamo(userId, recipe) {
             recipeID: uuidv4(),
             userID: userId,
             title: recipe.title,
+            description: recipe.description,
             image: recipe.image || null,
             ingredients: recipe.ingredients,
             steps: recipe.steps,
