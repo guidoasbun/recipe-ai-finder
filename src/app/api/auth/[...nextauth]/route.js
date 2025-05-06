@@ -3,6 +3,7 @@ import CognitoProvider from "next-auth/providers/cognito";
 import { saveUserToDynamo } from "@/lib/dynamo";
 
 export const authOptions = {
+  trustHost: true,
   providers: [
     CognitoProvider({
       clientId: process.env.COGNITO_CLIENT_ID,
