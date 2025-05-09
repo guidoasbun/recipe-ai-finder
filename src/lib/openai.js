@@ -41,8 +41,8 @@ export async function generateImage(prompt) {
   const image = await openai.images.generate({
     model: "dall-e-3",
     prompt,
-    size: "1024x1024", // You can change to a supported dimension
-    response_format: "url", // Ensure you get a URL
+    size: "1024x1024",
+    response_format: "url",
   });
 
   return image.data?.[0]?.url || null;
