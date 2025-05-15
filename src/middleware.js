@@ -16,6 +16,12 @@ function redirectIndexHtml(request) {
 
 // Combine the custom middleware with withAuth
 export default function middleware(request) {
+  // Skip middleware for health checks from the load balancer
+  if (request.nextUrl.pathname === '/') {
+    console.log('Health check detected, skipping middleware');
+    return NextResponse.next();
+  }
+
   // First check for index.html redirect
   const redirectResponse = redirectIndexHtml(request);
   if (redirectResponse) return redirectResponse;
@@ -45,16 +51,3 @@ export const config = {
     '/:path*'
   ]
 };
-
-// import { withAuth } from "next-auth/middleware"
-//
-//
-// export default withAuth({
-//     pages: {
-//         signIn: '/', // Redirect to landing page if not authenticated
-//     },
-// })
-//
-// export const config = {
-//     matcher: ['/enterIngredients', '/viewsavedrecipes'] // Add more protected routes here
-// };

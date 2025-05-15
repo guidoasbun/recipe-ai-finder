@@ -1,0 +1,19 @@
+aws_region = "us-east-1"
+domain_name = "recipe-ai-finder.com"
+key_name    = "your-ssh-key-name"
+
+# Environment variables for the application
+env_vars = {
+  OPENAI_API_KEY           = "your-openai-api-key"
+  COGNITO_CLIENT_ID        = "your-cognito-client-id"
+  COGNITO_CLIENT_SECRET    = "your-cognito-client-secret"
+  COGNITO_ISSUER           = "your-cognito-issuer"
+  NEXTAUTH_URL             = "https://recipe-ai-finder.com"
+  NEXTAUTH_SECRET          = "your-nextauth-secret"
+  NEXT_PUBLIC_COGNITO_REDIRECT_URI = "your-cognito-redirect-uri"
+  AWS_REGION               = "us-east-1"
+  AWS_ACCESS_KEY_ID        = "your-aws-access-key"
+  AWS_SECRET_ACCESS_KEY    = "your-aws-secret-key"
+  DYNAMO_TABLE_NAME        = "your-dynamo-table-name"
+  S3_BUCKET_NAME           = "your-s3-bucket-name"
+}

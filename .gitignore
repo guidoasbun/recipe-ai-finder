@@ -30,8 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env.local
+# local env files
+.env*.local
+.env
 
 # vercel
 .vercel
@@ -40,6 +41,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE
+.idea/
+.vscode/
+
 # Terraform
 /infrastructure/.terraform/
 /infrastructure/.terraform.lock.hcl
@@ -47,3 +52,17 @@ next-env.d.ts
 /infrastructure/terraform.tfstate.backup
 /infrastructure/terraform.tfvars
 /infrastructure/.terraform.tfstate.lock.info
+
+# AWS
+.aws/
+credentials
+config
+
+# Logs
+logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+*.swo

@@ -3,7 +3,7 @@ const nextConfig = {
   trailingSlash: false,
   skipTrailingSlashRedirect: true,
   // Your other config options...
-}
+};
 
 export default nextConfig;
 
