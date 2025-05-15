@@ -1,4 +1,6 @@
 # Recipe AI Finder
+[https://www.recipe-ai-finder.com](https://recipe-ai-finder.com/)
+
 
 Recipe AI Finder is a Next.js application that helps users find recipes based on ingredients they have available. The application uses OpenAI to generate recipe suggestions and is deployed on AWS infrastructure.
 
@@ -19,15 +21,21 @@ Recipe AI Finder is a Next.js application that helps users find recipes based on
 - **Infrastructure**: AWS (EC2, ALB, Auto Scaling, Route 53, ACM)
 - **IaC**: Terraform
 
+![infrastructure](/public/infrastructure.png "Optional title")
+
 ## Getting Started
+Go to the website
+- [https://www.recipe-ai-finder.com](https://recipe-ai-finder.com/)
+
+
+
+## Local Development
 
 ### Prerequisites
 
 - Node.js 18+ and npm
 - AWS account (for deployment)
 - OpenAI API key
-
-### Local Development
 
 1. Clone the repository:
 
@@ -62,22 +70,3 @@ npm run dev
 
 The application is deployed on AWS using Terraform. See the [infrastructure README](./infrastructure/README.md) for detailed deployment instructions.
 
-## Project Structure
-
-- `/src/app`: Next.js app router pages and API routes
-- `/src/components`: React components
-- `/src/lib`: Utility functions and API clients
-- `/public`: Static assets
-- `/infrastructure`: Terraform configuration for AWS deployment
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Open a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
