@@ -52,6 +52,10 @@ next-env.d.ts
 /infrastructure/terraform.tfstate.backup
 /infrastructure/terraform.tfvars
 /infrastructure/.terraform.tfstate.lock.info
+/infrastructure/*.tfplan
+/infrastructure/tfplan
+/infrastructure/crash.log
+/infrastructure/crash.*.log
 
 # AWS
 .aws/
