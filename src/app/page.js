@@ -38,7 +38,7 @@ export default function Home() {
           </p>
 
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-12">
-            Just tell us what you have — we'll create personalized recipes tailored to your ingredients, preferences, and dietary needs
+            Just tell us what you have — we&apos;ll create personalized recipes tailored to your ingredients, preferences, and dietary needs
           </p>
 
           {/* CTA Buttons */}
