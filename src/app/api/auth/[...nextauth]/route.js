@@ -1,6 +1,10 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { CognitoIdentityProviderClient, InitiateAuthCommand, GetUserCommand } from "@aws-sdk/client-cognito-identity-provider";
+import {
+  CognitoIdentityProviderClient,
+  InitiateAuthCommand,
+  GetUserCommand,
+} from "@aws-sdk/client-cognito-identity-provider";
 import { saveUserToDynamo } from "@/lib/dynamo";
 import crypto from "crypto";
 
@@ -55,7 +59,8 @@ export const authOptions = {
             throw new Error("Authentication failed - no result");
           }
 
-          const { AccessToken, IdToken, RefreshToken } = authResponse.AuthenticationResult;
+          const { AccessToken, IdToken, RefreshToken } =
+            authResponse.AuthenticationResult;
 
           // Decode the ID token to get user info
           const idTokenPayload = JSON.parse(
@@ -63,11 +68,11 @@ export const authOptions = {
           );
 
           console.log("Authentication successful for:", credentials.email);
-
           return {
             id: idTokenPayload.sub,
             email: idTokenPayload.email,
-            username: idTokenPayload["cognito:username"] || idTokenPayload.email,
+            username:
+              idTokenPayload["cognito:username"] || idTokenPayload.email,
             accessToken: AccessToken,
             idToken: IdToken,
             refreshToken: RefreshToken,
