@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { IoRestaurantOutline, IoSparklesSharp, IoBookSharp, IoLogOutOutline, IoHandRightOutline, IoClose, IoMenu } from "react-icons/io5";
@@ -121,13 +121,13 @@ export default function MainHeader() {
                 </button>
               </>
             ) : (
-              <button
+              <Link
+                href="/login"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-200"
-                onClick={() => signIn("cognito")}
               >
                 <IoSparklesSharp className="w-5 h-5" />
                 Log In
-              </button>
+              </Link>
             )}
           </div>
         </div>
@@ -180,16 +180,14 @@ export default function MainHeader() {
                 </button>
               </>
             ) : (
-              <button
+              <Link
+                href="/login"
                 className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all"
-                onClick={() => {
-                  signIn("cognito");
-                  setMenuOpen(false);
-                }}
+                onClick={() => setMenuOpen(false)}
               >
                 <IoSparklesSharp className="w-5 h-5" />
                 Log In
-              </button>
+              </Link>
             )}
           </div>
         </div>

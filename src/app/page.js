@@ -52,7 +52,7 @@ export default function Home() {
                 </span>
               </Link>
             ) : (
-              <Link href="/api/auth/signin?callbackUrl=/enterIngredients">
+              <Link href="/login?callbackUrl=/enterIngredients">
                 <span className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white px-8 py-4 rounded-2xl text-lg font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-emerald-500/50">
                   <IoSparklesSharp className="w-5 h-5" />
                   Get Started Free
