@@ -92,6 +92,18 @@ variable "cognito_issuer" {
   sensitive   = true
 }
 
+variable "google_client_id" {
+  description = "Google OAuth Client ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "google_client_secret" {
+  description = "Google OAuth Client Secret"
+  type        = string
+  sensitive   = true
+}
+
 variable "app_aws_access_key_id" {
   description = "AWS Access Key ID for application (DynamoDB/S3)"
   type        = string

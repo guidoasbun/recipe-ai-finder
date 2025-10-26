@@ -481,6 +481,14 @@ resource "aws_ecs_task_definition" "main" {
         valueFrom = aws_ssm_parameter.cognito_issuer.arn
       },
       {
+        name      = "GOOGLE_CLIENT_ID"
+        valueFrom = aws_ssm_parameter.google_client_id.arn
+      },
+      {
+        name      = "GOOGLE_CLIENT_SECRET"
+        valueFrom = aws_ssm_parameter.google_client_secret.arn
+      },
+      {
         name      = "AWS_ACCESS_KEY_ID"
         valueFrom = aws_ssm_parameter.app_aws_access_key_id.arn
       },

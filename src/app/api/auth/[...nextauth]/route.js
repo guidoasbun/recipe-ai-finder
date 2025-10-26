@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import {
   CognitoIdentityProviderClient,
   InitiateAuthCommand,
@@ -24,6 +25,17 @@ function calculateSecretHash(username, clientId, clientSecret) {
 export const authOptions = {
   trustHost: true,
   providers: [
+    // Google OAuth Provider (direct Google sign-in, no Cognito redirect)
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "select_account", // Forces account selection every time
+        },
+      },
+    }),
+    // Credentials Provider (for email/password sign-in via Cognito)
     CredentialsProvider({
       name: "Cognito",
       credentials: {
@@ -102,10 +114,36 @@ export const authOptions = {
     signIn: "/login", // Custom sign-in page
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
       // On first sign in (when user object exists)
       if (user) {
-        // Save user to DynamoDB
+        // Handle Google OAuth login (direct Google sign-in)
+        if (account?.provider === "google") {
+          const userId = token.sub || user.id;
+          const userEmail = token.email || user.email || profile?.email;
+          const userName = user.name || profile?.name || userEmail?.split("@")[0];
+
+          // Save user to DynamoDB (will be created if first time)
+          await saveUserToDynamo({
+            id: userId,
+            email: userEmail,
+            username: userName,
+          });
+
+          console.log("Google authentication successful for:", userEmail);
+
+          return {
+            ...token,
+            accessToken: account.access_token,
+            idToken: account.id_token,
+            refreshToken: account.refresh_token,
+            email: userEmail,
+            username: userName,
+            sub: userId,
+          };
+        }
+
+        // Handle credentials login (email/password via Cognito)
         await saveUserToDynamo({
           id: user.id,
           email: user.email,
