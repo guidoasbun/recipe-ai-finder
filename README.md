@@ -1,4 +1,5 @@
 # Recipe AI Finder
+
 [https://www.recipe-ai-finder.com](https://recipe-ai-finder.com/)
 
 Recipe AI Finder is a Next.js application that helps users find recipes based on ingredients they have available. The application uses OpenAI to generate recipe suggestions and is deployed on AWS infrastructure using ECS Fargate with ARM64 (Graviton) processors.
@@ -9,14 +10,14 @@ Recipe AI Finder is a Next.js application that helps users find recipes based on
 - AI-powered recipe generation using OpenAI
 - View detailed recipe instructions
 - Save favorite recipes
-- User authentication with AWS Cognito
+- User authentication with AWS Cognito and Google OAuth
 - Responsive design for mobile and desktop
 
 ## Tech Stack
 
 - **Frontend**: Next.js 15, React 19, Tailwind CSS 4
 - **Backend**: Next.js API routes (App Router + Pages Router)
-- **Authentication**: NextAuth.js v4 with AWS Cognito
+- **Authentication**: NextAuth.js v4 with AWS Cognito (email/password) and Google OAuth
 - **AI**: OpenAI (GPT-3.5-turbo for recipes, DALL-E 3 for images)
 - **Database**: AWS DynamoDB
 - **Storage**: AWS S3
@@ -45,6 +46,7 @@ The application runs on AWS ECS Fargate with ARM64 (Graviton) processors for cos
 ## Getting Started
 
 ### Visit the Live Application
+
 Go to [https://www.recipe-ai-finder.com](https://recipe-ai-finder.com/)
 
 ---
@@ -79,10 +81,15 @@ npm install
 # OpenAI
 OPENAI_API_KEY=your-openai-api-key
 
-# AWS Cognito
+# AWS Cognito (for email/password authentication)
 COGNITO_CLIENT_ID=your-cognito-client-id
 COGNITO_CLIENT_SECRET=your-cognito-client-secret
 COGNITO_ISSUER=https://cognito-idp.us-east-1.amazonaws.com/your-user-pool
+COGNITO_DOMAIN=https://your-domain.auth.us-east-1.amazoncognito.com
+
+# Google OAuth (for Google sign-in)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 # NextAuth
 NEXTAUTH_URL=http://localhost:3000
@@ -106,6 +113,43 @@ npm run dev
 
 ---
 
+## Authentication Setup
+
+The application supports two authentication methods:
+
+### 1. Email/Password Authentication (AWS Cognito)
+
+Users can create accounts and sign in with email and password through AWS Cognito User Pools.
+
+**Setup:**
+
+1. Create a User Pool in AWS Cognito
+2. Configure app client with secret
+3. Enable email verification
+4. Add credentials to `.env.local`
+
+### 2. Google OAuth (Direct Integration)
+
+Users can sign in with their Google accounts using direct OAuth integration (bypassing Cognito Hosted UI for a seamless experience).
+
+**Setup:**
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create OAuth 2.0 credentials
+3. Add authorized redirect URIs:
+   - Local: `http://localhost:3000/api/auth/callback/google`
+   - Production: `https://recipe-ai-finder.com/api/auth/callback/google`
+4. Add credentials to `.env.local` and `terraform.tfvars`
+
+**User Experience:**
+
+- Users stay within the app (no redirects to Cognito)
+- Google OAuth popup/redirect for authentication
+- First-time Google users automatically get database entries
+- Both authentication types work seamlessly together
+
+---
+
 ## Deployment
 
 The application is deployed on AWS using Terraform-managed infrastructure with ECS Fargate (ARM64/Graviton processors).
@@ -115,11 +159,13 @@ The application is deployed on AWS using Terraform-managed infrastructure with E
 Before deploying, ensure you have:
 
 1. **Terraform** installed (v1.0+)
+
    ```bash
    brew install terraform  # macOS
    ```
 
 2. **AWS CLI** installed and configured
+
    ```bash
    aws configure
    # Enter your AWS credentials and region (us-east-1)
@@ -128,6 +174,7 @@ Before deploying, ensure you have:
 3. **Docker** installed (for building images)
 
 4. **GitHub Personal Access Token**
+
    - Go to: https://github.com/settings/tokens
    - Create a token with scopes: `repo`, `workflow`, `admin:repo_hook`
    - Save the token securely
@@ -152,6 +199,7 @@ Run the automated deployment script:
 ```
 
 This script will:
+
 1. Initialize Terraform
 2. Validate the configuration
 3. Show you a deployment plan
@@ -161,16 +209,17 @@ This script will:
 7. Display Docker build commands
 
 **What gets created:**
-- ✅ VPC with public subnets across 2 availability zones
-- ✅ Application Load Balancer with SSL certificate
-- ✅ ECS Fargate cluster configured for ARM64 (Graviton)
-- ✅ ECR repository for Docker images
-- ✅ Route 53 DNS records (apex and www)
-- ✅ SSL/TLS certificate (auto-validated via DNS)
-- ✅ CloudWatch log groups
-- ✅ IAM roles and policies
-- ✅ AWS Parameter Store secrets (encrypted)
-- ✅ GitHub Actions workflow and secrets
+
+- VPC with public subnets across 2 availability zones
+- Application Load Balancer with SSL certificate
+- ECS Fargate cluster configured for ARM64 (Graviton)
+- ECR repository for Docker images
+- Route 53 DNS records (apex and www)
+- SSL/TLS certificate (auto-validated via DNS)
+- CloudWatch log groups
+- IAM roles and policies
+- AWS Parameter Store secrets (encrypted)
+- GitHub Actions workflow and secrets
 
 #### Step 3: Build and Push Initial Docker Image
 
@@ -207,6 +256,7 @@ aws logs tail /ecs/recipe-ai-finder --follow --region us-east-1
 #### Step 5: Access Your Application
 
 After DNS propagates (2-3 minutes), visit:
+
 - **https://recipe-ai-finder.com**
 
 ---
@@ -231,6 +281,7 @@ git push origin main
 ```
 
 GitHub Actions will:
+
 1. Build a multi-platform Docker image (ARM64)
 2. Push to ECR
 3. Update ECS task definition
@@ -250,6 +301,7 @@ export GITHUB_TOKEN="ghp_your_github_token_here"
 ```
 
 This will:
+
 1. Ask for confirmation (type "yes")
 2. Delete all ECR images
 3. Destroy all AWS resources
@@ -257,21 +309,23 @@ This will:
 5. Complete in ~5 minutes
 
 **What gets deleted:**
-- ✅ ECS Fargate cluster and tasks
-- ✅ Application Load Balancer
-- ✅ ECR repository and all Docker images
-- ✅ VPC and networking
-- ✅ Route 53 DNS records (A records only)
-- ✅ SSL certificate
-- ✅ CloudWatch logs
-- ✅ AWS Parameter Store secrets
-- ✅ GitHub Actions configuration
+
+- ECS Fargate cluster and tasks
+- Application Load Balancer
+- ECR repository and all Docker images
+- VPC and networking
+- Route 53 DNS records (A records only)
+- SSL certificate
+- CloudWatch logs
+- AWS Parameter Store secrets
+- GitHub Actions configuration
 
 **What remains:**
-- ✅ Your code and GitHub repository
-- ✅ DynamoDB tables (Users-recipe-ai, Recipes-recipe-ai)
-- ✅ S3 bucket (recipe-ai-images)
-- ✅ Route 53 Hosted Zone (domain registration)
+
+- Your code and GitHub repository
+- DynamoDB tables (Users-recipe-ai, Recipes-recipe-ai)
+- S3 bucket (recipe-ai-images)
+- Route 53 Hosted Zone (domain registration)
 
 ### Re-Deploy After Teardown
 
@@ -289,6 +343,7 @@ Then rebuild and push the Docker image (see Step 3 above).
 To modify infrastructure settings (e.g., increase CPU/memory):
 
 1. Edit `infrastructure/terraform.tfvars`:
+
    ```hcl
    fargate_cpu    = 512   # Increase from 256
    fargate_memory = 1024  # Increase from 512
@@ -328,6 +383,7 @@ aws ecs describe-services \
 ### View CloudWatch Metrics
 
 Visit AWS Console:
+
 - CloudWatch > Log groups > `/ecs/recipe-ai-finder`
 - ECS > Clusters > `recipe-ai-finder-cluster`
 
@@ -337,16 +393,16 @@ Visit AWS Console:
 
 Monthly costs for production infrastructure:
 
-| Resource | Cost |
-|----------|------|
-| ECS Fargate (ARM64/Graviton, 256 CPU, 512MB) | ~$10/month |
-| Application Load Balancer | ~$16/month |
-| ECR Storage (~5GB) | ~$0.50/month |
-| CloudWatch Logs (7-day retention) | ~$0.50/month |
-| Parameter Store (secrets) | ~$0.35/month |
-| Route 53 Hosted Zone | ~$0.50/month |
-| Data Transfer | ~$1-2/month |
-| **Total** | **~$29/month** |
+| Resource                                     | Cost           |
+| -------------------------------------------- | -------------- |
+| ECS Fargate (ARM64/Graviton, 256 CPU, 512MB) | ~$10/month     |
+| Application Load Balancer                    | ~$16/month     |
+| ECR Storage (~5GB)                           | ~$0.50/month   |
+| CloudWatch Logs (7-day retention)            | ~$0.50/month   |
+| Parameter Store (secrets)                    | ~$0.35/month   |
+| Route 53 Hosted Zone                         | ~$0.50/month   |
+| Data Transfer                                | ~$1-2/month    |
+| **Total**                                    | **~$29/month** |
 
 **Note**: Using ARM64 (Graviton) saves ~17% compared to AMD64 architecture.
 
@@ -357,16 +413,19 @@ Monthly costs for production infrastructure:
 ### Deployment Issues
 
 **Issue**: Terraform validation fails
+
 ```bash
 cd infrastructure
 terraform validate
 ```
 
 **Issue**: Docker image fails to pull
+
 - Ensure you're building for ARM64 (native on Apple Silicon)
 - Verify ECR login: `aws ecr get-login-password --region us-east-1`
 
 **Issue**: ECS task keeps restarting
+
 ```bash
 # Check logs for errors
 aws logs tail /ecs/recipe-ai-finder --follow --region us-east-1
@@ -380,6 +439,7 @@ aws ecs describe-services \
 ```
 
 **Issue**: DNS not resolving
+
 - Wait 2-3 minutes for DNS propagation
 - Verify Route 53 records point to ALB
 - Check SSL certificate validation status
@@ -433,18 +493,24 @@ recipe-ai-finder/
 - `domain_name` - Your domain (recipe-ai-finder.com)
 - `github_owner` - GitHub username
 - `github_repo` - Repository name
+- `github_token` - GitHub personal access token
 - `openai_api_key` - OpenAI API key
 - `cognito_client_id` - Cognito client ID
 - `cognito_client_secret` - Cognito client secret
 - `cognito_issuer` - Cognito issuer URL
+- `google_client_id` - Google OAuth client ID
+- `google_client_secret` - Google OAuth client secret
 - `app_aws_access_key_id` - AWS credentials for app
 - `app_aws_secret_access_key` - AWS secret key
 
 ### Managed by Terraform
 
 Terraform automatically creates and manages these in AWS Parameter Store:
-- NEXTAUTH_SECRET (auto-generated)
-- NEXTAUTH_URL (set to your domain)
+
+- `NEXTAUTH_SECRET` (auto-generated)
+- `NEXTAUTH_URL` (set to your domain)
+- `GOOGLE_CLIENT_ID` (from terraform.tfvars)
+- `GOOGLE_CLIENT_SECRET` (from terraform.tfvars)
 - All credentials and configuration
 
 ---
@@ -468,6 +534,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For issues and questions:
+
 - Open an issue on GitHub
 - Check CloudWatch logs for runtime errors
 - Review Terraform state for infrastructure issues
