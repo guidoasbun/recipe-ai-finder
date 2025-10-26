@@ -45,6 +45,22 @@ resource "aws_ssm_parameter" "cognito_issuer" {
   tags = local.tags
 }
 
+resource "aws_ssm_parameter" "google_client_id" {
+  name  = "/${var.app_name}/GOOGLE_CLIENT_ID"
+  type  = "SecureString"
+  value = var.google_client_id
+
+  tags = local.tags
+}
+
+resource "aws_ssm_parameter" "google_client_secret" {
+  name  = "/${var.app_name}/GOOGLE_CLIENT_SECRET"
+  type  = "SecureString"
+  value = var.google_client_secret
+
+  tags = local.tags
+}
+
 resource "aws_ssm_parameter" "app_aws_access_key_id" {
   name  = "/${var.app_name}/AWS_ACCESS_KEY_ID"
   type  = "SecureString"
