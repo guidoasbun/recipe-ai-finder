@@ -1,5 +1,10 @@
-export default function LoadingRecipes() {
-  return(
+export default function LoadingRecipes({ recipesReceived = 0 }) {
+  const message =
+    recipesReceived === 0
+      ? "Generating recipes..."
+      : `Generated ${recipesReceived} of 3 recipes...`;
+
+  return (
     <div className="flex items-center gap-2 mt-6 text-gray-600">
       <svg
         className="animate-spin h-5 w-5 text-green-600"
@@ -20,7 +25,7 @@ export default function LoadingRecipes() {
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
         />
       </svg>
-      <span>Generating recipes...</span>
+      <span>{message}</span>
     </div>
-  )
+  );
 }
