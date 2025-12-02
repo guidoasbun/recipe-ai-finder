@@ -8,6 +8,7 @@ export default function EnterIngredients() {
   const [ingredients, setIngredients] = useState(["", "", ""]);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [recipesReceived, setRecipesReceived] = useState(0);
 
   // Load recipes from localStorage on mount
   useEffect(() => {
@@ -28,15 +29,61 @@ export default function EnterIngredients() {
 
   async function handleGenerate() {
     setLoading(true);
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      body: JSON.stringify({
-        ingredients: ingredients.filter((i) => i.trim() !== ""),
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await res.json();
-    setRecipes(data.result);
+    setRecipes([]);
+    setRecipesReceived(0);
+
+    try {
+      const res = await fetch("/api/generate-stream", {
+        method: "POST",
+        body: JSON.stringify({
+          ingredients: ingredients.filter((i) => i.trim() !== ""),
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const jsonStr = line.slice(6);
+            const data = JSON.parse(jsonStr);
+
+            if (data.done) {
+              setLoading(false);
+              return;
+            }
+
+            if (data.error) {
+              console.error("Stream error:", data.error);
+              setLoading(false);
+              return;
+            }
+
+            if (data.recipe) {
+              setRecipes((prev) => {
+                const updated = [...prev];
+                updated[data.index] = data.recipe;
+                return updated;
+              });
+              setRecipesReceived((prev) => prev + 1);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Failed to generate recipes:", error);
+    }
+
     setLoading(false);
   }
 
@@ -80,7 +127,7 @@ export default function EnterIngredients() {
         </button>
       </div>
 
-      {loading && <LoadingRecipes />}
+      {loading && <LoadingRecipes recipesReceived={recipesReceived} />}
       {Array.isArray(recipes) && recipes.length > 0 && (
         <div className="grid gap-6">
           {recipes.map((recipe, i) => (

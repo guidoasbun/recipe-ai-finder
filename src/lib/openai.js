@@ -4,11 +4,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function generateRecipes(ingredients) {
-  const prompt = `Create 3 unique recipes using only these ingredients: ${ingredients.filter((i) => i.trim() !== "").join(", ")}.
+  const prompt = `Create 3 unique recipes using only these ingredients: ${ingredients
+    .filter((i) => i.trim() !== "")
+    .join(", ")}.
     Assume I have basic cooking ingredients like salt, pepper, flour and oil.
     Give me a brief description of the recipe. 
     The recipes should be simple and easy to follow.

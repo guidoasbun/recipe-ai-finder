@@ -1,5 +1,11 @@
 import { generateRecipes, generateImage } from "@/lib/openai";
 
+/**
+ * FALLBACK/BACKUP ENDPOINT
+ * This is the original non-streaming recipe generation endpoint.
+ * Kept as a backup in case SSE streaming (/api/generate-stream) has compatibility issues.
+ * The primary endpoint is now /api/generate-stream which streams recipes as they complete.
+ */
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Only POST allowed" });
