@@ -19,6 +19,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Build args for environment variables needed at build time
+ARG OPENAI_API_KEY
+ENV OPENAI_API_KEY=$OPENAI_API_KEY
+
 # Build Next.js application
 RUN npm run build
 

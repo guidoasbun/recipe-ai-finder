@@ -130,9 +130,9 @@ export default function EnterIngredients() {
       {loading && <LoadingRecipes recipesReceived={recipesReceived} />}
       {Array.isArray(recipes) && recipes.length > 0 && (
         <div className="grid gap-6">
-          {recipes.map((recipe, i) => (
-            <RecipeCard key={i} recipe={recipe} />
-          ))}
+          {recipes.map((recipe, i) =>
+            recipe ? <RecipeCard key={i} recipe={recipe} /> : null
+          )}
         </div>
       )}
     </main>
